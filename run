@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# might as well do this every time while iterating
+image=$(docker build -q .)
+
+craft_dir=$(pwd "$(dirname "$0")")
+uml_dir="${craft_dir}/uml/"
+
+ep="--entrypoint"
+entrypoint=" "
+
+while test $# != 0
+do
+    case "$1" in
+    -i) entrypoint="${ep} sh -it" ;;
+    -w) entrypoint="${ep} /bin/watch.sh" ;;
+    *)  usage ;;
+    esac
+    shift
+done
+
+docker run $entrypoint -v "${uml_dir}:/uml" "${image}"
